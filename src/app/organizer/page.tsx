@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Calendar, MapPin, Tag, Image, FileText, List } from "lucide-react";
+import { AddressAutocomplete } from "@/components/ui/AddressAutocomplete";
 
 interface Category {
   id: string;
@@ -223,15 +224,16 @@ export default function OrganizerPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Adresse complète *
+            Adresse complète * (tape pour rechercher)
           </label>
-          <input
-            type="text"
-            required
+          <AddressAutocomplete
             value={form.address}
-            onChange={(e) => updateField("address", e.target.value)}
+            onChange={(address, lat, lng) => {
+              updateField("address", address);
+              updateField("lat", lat);
+              updateField("lng", lng);
+            }}
             placeholder="Ex: 12 rue de la Paix, 75001 Paris"
-            className="input"
           />
         </div>
 
