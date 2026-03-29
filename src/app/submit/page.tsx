@@ -2,18 +2,46 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ArrowLeft, Sparkles } from "lucide-react";
+import { Check, ArrowLeft, Sparkles, Eye, Edit3 } from "lucide-react";
 import { AddressAutocomplete } from "@/components/ui/AddressAutocomplete";
 import Link from "next/link";
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+}
+
+interface FormData {
+  title: string;
+  description: string;
+  categoryId: string;
+  date: string;
+  time: string;
+  endDate: string;
+  endTime: string;
+  location: string;
+  address: string;
+  lat: number;
+  lng: number;
+  price: number;
+  isFree: boolean;
+  imageUrl: string;
+  capacity: string;
+  submitterName: string;
+  submitterEmail: string;
+}
 
 export default function SubmitPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [categories, setCategories] = useState<{ id: string; name: string; slug: string; icon: string }[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [step, setStep] = useState<"form" | "preview">("form");
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormData>({
     title: "",
     description: "",
     categoryId: "",
@@ -24,7 +52,7 @@ export default function SubmitPage() {
     location: "",
     address: "",
     lat: 43.7102,
-    lng: 7.2620,
+    lng: 7.262,
     price: 0,
     isFree: true,
     imageUrl: "",
@@ -36,17 +64,21 @@ export default function SubmitPage() {
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setCategories(data))
+      .then((data) => setCategories(data.categories || data))
       .catch(() => {});
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handlePreview(e: React.FormEvent) {
     e.preventDefault();
     if (!form.title || !form.description || !form.categoryId || !form.date || !form.time || !form.location || !form.address || !form.submitterName || !form.submitterEmail) {
       setError("Remplis tous les champs obligatoires.");
       return;
     }
+    setError("");
+    setStep("preview");
+  }
 
+  async function handleSubmit() {
     setLoading(true);
     setError("");
 
@@ -81,12 +113,16 @@ export default function SubmitPage() {
         setSuccess(true);
       } else {
         setError("Erreur lors de l'envoi. Réessaie.");
+        setStep("form");
       }
     } catch {
       setError("Erreur réseau. Vérifie ta connexion.");
+      setStep("form");
     }
     setLoading(false);
   }
+
+  const selectedCategory = categories.find((c) => c.id === form.categoryId);
 
   if (success) {
     return (
@@ -94,9 +130,7 @@ export default function SubmitPage() {
         <div className="w-16 h-16 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <Check className="w-8 h-8 text-accent-600" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">
-          Event envoyé !
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-3">Event envoyé !</h1>
         <p className="text-gray-500 mb-8">
           Ton événement sera visible après validation par notre équipe (sous 24h). Merci de contribuer à la vie locale !
         </p>
@@ -104,8 +138,114 @@ export default function SubmitPage() {
           <Link href="/" className="btn-secondary">
             Retour à l&apos;accueil
           </Link>
-          <button onClick={() => { setSuccess(false); setForm({ ...form, title: "", description: "" }); }} className="btn-primary">
+          <button
+            onClick={() => {
+              setSuccess(false);
+              setStep("form");
+              setForm({ ...form, title: "", description: "" });
+            }}
+            className="btn-primary"
+          >
             En proposer un autre
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "preview") {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-10">
+        <div className="mb-8">
+          <button
+            onClick={() => setStep("form")}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Modifier
+          </button>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 bg-accent-100 rounded-xl flex items-center justify-center">
+              <Eye className="w-5 h-5 text-accent-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">Prévisualisation</h1>
+          </div>
+          <p className="text-gray-500">Vérifie les infos avant de confirmer.</p>
+        </div>
+
+        <div className="card p-6 mb-6 space-y-4">
+          {form.imageUrl && (
+            <img
+              src={form.imageUrl}
+              alt={form.title}
+              className="w-full aspect-[16/9] object-cover rounded-xl"
+            />
+          )}
+
+          {selectedCategory && (
+            <span className="inline-flex items-center gap-1.5 bg-primary-50 text-primary-700 text-sm font-medium px-3 py-1 rounded-full">
+              {selectedCategory.icon} {selectedCategory.name}
+            </span>
+          )}
+
+          <h2 className="text-xl font-bold text-gray-900">{form.title}</h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600">
+            <div>
+              <span className="font-medium">Date :</span>{" "}
+              {form.date} à {form.time}
+              {form.endDate && ` → ${form.endDate} à ${form.endTime}`}
+            </div>
+            <div>
+              <span className="font-medium">Lieu :</span> {form.location}
+            </div>
+            <div>
+              <span className="font-medium">Adresse :</span> {form.address}
+            </div>
+            <div>
+              <span className="font-medium">Prix :</span>{" "}
+              {form.isFree ? "Gratuit" : `${form.price} €`}
+            </div>
+            {form.capacity && (
+              <div>
+                <span className="font-medium">Capacité :</span> {form.capacity} places
+              </div>
+            )}
+          </div>
+
+          <div className="border-t pt-4">
+            <p className="text-sm font-medium text-gray-700 mb-1">Description</p>
+            <p className="text-gray-600 text-sm whitespace-pre-line">{form.description}</p>
+          </div>
+
+          <div className="border-t pt-4">
+            <p className="text-sm font-medium text-gray-700 mb-1">Contact</p>
+            <p className="text-sm text-gray-600">
+              {form.submitterName} — {form.submitterEmail}
+            </p>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4">
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => setStep("form")}
+            className="btn-secondary flex-1 flex items-center justify-center gap-2"
+          >
+            <Edit3 className="w-4 h-4" />
+            Modifier
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="btn-primary flex-1 py-3 disabled:opacity-50"
+          >
+            {loading ? "Envoi en cours..." : "Confirmer et envoyer"}
           </button>
         </div>
       </div>
@@ -131,7 +271,7 @@ export default function SubmitPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handlePreview} className="space-y-6">
         {/* Submitter info */}
         <div className="bg-warm-100/50 rounded-2xl p-5 space-y-4">
           <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Tes infos</h2>
@@ -326,10 +466,10 @@ export default function SubmitPage() {
 
         <button
           type="submit"
-          disabled={loading}
-          className="btn-primary w-full py-3 text-base disabled:opacity-50"
+          className="btn-primary w-full py-3 text-base flex items-center justify-center gap-2"
         >
-          {loading ? "Envoi en cours..." : "Proposer cet événement"}
+          <Eye className="w-4 h-4" />
+          Prévisualiser
         </button>
       </form>
     </div>
