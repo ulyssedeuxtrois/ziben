@@ -19,6 +19,14 @@ import { EventMap } from "@/components/map/EventMap";
 import { useAuth } from "@/lib/auth";
 import type { EventWithCategory } from "@/lib/types";
 
+interface SimilarEvent {
+  id: string;
+  title: string;
+  date: string;
+  imageUrl: string | null;
+  category: { icon: string; name: string };
+}
+
 export default function EventPage() {
   const params = useParams();
   const { user } = useAuth();
@@ -29,6 +37,7 @@ export default function EventPage() {
   const [rsvped, setRsvped] = useState(false);
   const [rsvpCount, setRsvpCount] = useState(0);
   const [rsvpLoading, setRsvpLoading] = useState(false);
+  const [similarEvents, setSimilarEvents] = useState<SimilarEvent[]>([]);
 
   useEffect(() => {
     fetch(`/api/events/${params.id}`)
@@ -38,6 +47,16 @@ export default function EventPage() {
           setEvent(data);
           setRsvpCount(data.rsvpCount ?? 0);
           fetch(`/api/events/${params.id}/view`, { method: "POST" }).catch(() => {});
+          // Fetch similar events by category
+          if (data.categoryId) {
+            fetch(`/api/events?category=${data.category?.slug}&limit=4`)
+              .then((r) => r.json())
+              .then((d) => {
+                const others = (d.events || []).filter((e: SimilarEvent) => e.id !== data.id).slice(0, 3);
+                setSimilarEvents(others);
+              })
+              .catch(() => {});
+          }
         }
       })
       .finally(() => setLoading(false));
@@ -214,6 +233,7 @@ export default function EventPage() {
 
         <div className="md:col-span-1">
           <div className="sticky top-24 space-y-4">
+
             <div className="card p-5">
               <div className="text-2xl font-bold text-gray-900 mb-1">
                 {formatPrice(event.price, event.isFree)}
@@ -292,6 +312,39 @@ export default function EventPage() {
           </div>
         </div>
       </div>
+
+      {similarEvents.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Tu pourrais aussi aimer</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {similarEvents.map((e) => (
+              <Link
+                key={e.id}
+                href={`/events/${e.id}`}
+                className="card overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="aspect-[16/9] bg-gray-100 relative">
+                  {e.imageUrl ? (
+                    <img
+                      src={e.imageUrl}
+                      alt={e.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-primary-50 to-accent-50">
+                      {e.category.icon}
+                    </div>
+                  )}
+                </div>
+                <div className="p-3">
+                  <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">{e.title}</p>
+                  <p className="text-xs text-gray-500">{formatDate(e.date)}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
