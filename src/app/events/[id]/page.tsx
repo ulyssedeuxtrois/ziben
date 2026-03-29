@@ -11,9 +11,10 @@ import {
   Share2,
   ArrowLeft,
   User,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
-import { formatDate, formatTime, formatPrice } from "@/lib/utils";
+import { formatDate, formatTime, formatPrice, generateSessionId } from "@/lib/utils";
 import { EventMap } from "@/components/map/EventMap";
 import { useAuth } from "@/lib/auth";
 import type { EventWithCategory } from "@/lib/types";
@@ -25,15 +26,59 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [rsvped, setRsvped] = useState(false);
+  const [rsvpCount, setRsvpCount] = useState(0);
+  const [rsvpLoading, setRsvpLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/events/${params.id}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!data.error) setEvent(data);
+        if (!data.error) {
+          setEvent(data);
+          setRsvpCount(data.rsvpCount ?? 0);
+          fetch(`/api/events/${params.id}/view`, { method: "POST" }).catch(() => {});
+        }
       })
       .finally(() => setLoading(false));
   }, [params.id]);
+
+  useEffect(() => {
+    if (!params.id) return;
+    const sessionId = generateSessionId();
+    fetch(`/api/events/${params.id}/rsvp?sessionId=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.rsvped !== undefined) setRsvped(data.rsvped);
+        if (data.rsvpCount !== undefined) setRsvpCount(data.rsvpCount);
+      })
+      .catch(() => {});
+  }, [params.id]);
+
+  useEffect(() => {
+    if (event) {
+      document.title = `${event.title} — Ziben`;
+    }
+  }, [event]);
+
+  async function toggleRsvp() {
+    const sessionId = generateSessionId();
+    setRsvpLoading(true);
+    try {
+      const res = await fetch(`/api/events/${params.id}/rsvp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+      const data = await res.json();
+      if (data.rsvped !== undefined) setRsvped(data.rsvped);
+      if (data.rsvpCount !== undefined) setRsvpCount(data.rsvpCount);
+    } catch {
+      // ignore
+    } finally {
+      setRsvpLoading(false);
+    }
+  }
 
   async function toggleSave() {
     if (!user) {
@@ -176,6 +221,37 @@ export default function EventPage() {
               <p className="text-sm text-gray-500 mb-4">
                 {formatDate(event.date)} · {formatTime(event.date)}
               </p>
+
+              <button
+                onClick={toggleRsvp}
+                disabled={rsvpLoading}
+                className={`w-full flex items-center justify-center gap-1.5 text-sm py-2.5 rounded-xl font-medium transition-colors mb-3 ${
+                  rsvped
+                    ? "bg-primary-500 text-white"
+                    : "btn-primary"
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                {rsvpLoading ? "..." : rsvped ? `J'y vais ✓ (${rsvpCount})` : `J'y vais (${rsvpCount})`}
+              </button>
+
+              {event.capacity != null && (
+                <div className="mt-3 mb-3">
+                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                    <span>{rsvpCount} participants</span>
+                    <span>{event.capacity} places</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-1.5">
+                    <div
+                      className={`h-1.5 rounded-full transition-all ${
+                        rsvpCount >= event.capacity ? "bg-red-400" : "bg-primary-400"
+                      }`}
+                      style={{ width: `${Math.min(100, (rsvpCount / event.capacity) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="flex gap-2">
                 <button
                   onClick={toggleSave}
