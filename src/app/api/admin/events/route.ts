@@ -75,6 +75,42 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
+// PUT /api/admin/events — edit event fields
+export async function PUT(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
+
+  try {
+    const { eventId, title, description, date, location, price, isFree, imageUrl } = await request.json();
+
+    if (!eventId) {
+      return NextResponse.json({ error: "eventId requis" }, { status: 400 });
+    }
+
+    const data: any = {};
+    if (title !== undefined) data.title = title;
+    if (description !== undefined) data.description = description;
+    if (date !== undefined) data.date = new Date(date);
+    if (location !== undefined) data.location = location;
+    if (price !== undefined) data.price = price;
+    if (isFree !== undefined) data.isFree = isFree;
+    if (imageUrl !== undefined) data.imageUrl = imageUrl;
+
+    const event = await prisma.event.update({
+      where: { id: eventId },
+      data,
+      include: { category: true },
+    });
+
+    return NextResponse.json(event);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Erreur lors de la modification" },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE /api/admin/events — delete an event and related records
 export async function DELETE(request: NextRequest) {
   const auth = await verifyAdmin(request);

@@ -14,14 +14,19 @@ import {
   Eye,
   ChevronDown,
   Trash2,
+  Pencil,
 } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
 
 interface AdminEvent {
   id: string;
   title: string;
+  description: string;
   date: string;
   location: string;
+  price: number;
+  isFree: boolean;
+  imageUrl: string | null;
   status: string;
   createdAt: string;
   category: { name: string; icon: string };
@@ -49,6 +54,16 @@ export default function AdminPage() {
   const [counts, setCounts] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    price: 0,
+    isFree: true,
+    imageUrl: "",
+  });
 
   useEffect(() => {
     if (!authLoading && !isAdmin) {
@@ -112,6 +127,39 @@ export default function AdminPage() {
     });
     if (res.ok) {
       setEvents((prev) => prev.filter((e) => e.id !== eventId));
+    }
+  }
+
+  function startEdit(event: AdminEvent) {
+    setEditingId(event.id);
+    const d = new Date(event.date);
+    const localISO = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+    setEditForm({
+      title: event.title,
+      description: event.description || "",
+      date: localISO,
+      location: event.location,
+      price: event.price,
+      isFree: event.isFree,
+      imageUrl: event.imageUrl || "",
+    });
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    const res = await fetch("/api/admin/events", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...adminHeaders },
+      body: JSON.stringify({ eventId: editingId, ...editForm, date: new Date(editForm.date).toISOString() }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setEvents((prev) =>
+        prev.map((e) => (e.id === editingId ? { ...e, ...updated } : e))
+      );
+      setEditingId(null);
     }
   }
 
@@ -261,6 +309,13 @@ export default function AdminPage() {
                       </button>
                     )}
                     <button
+                      onClick={() => startEdit(event)}
+                      className="flex items-center gap-1 px-2 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-medium hover:bg-blue-100 transition-colors"
+                      title="Modifier"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                    <button
                       onClick={() => deleteEvent(event.id)}
                       className="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors"
                       title="Supprimer"
@@ -269,6 +324,92 @@ export default function AdminPage() {
                     </button>
                   </div>
                 </div>
+                {editingId === event.id && (
+                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Titre</label>
+                        <input
+                          type="text"
+                          className="input w-full text-sm"
+                          value={editForm.title}
+                          onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Lieu</label>
+                        <input
+                          type="text"
+                          className="input w-full text-sm"
+                          value={editForm.location}
+                          onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
+                        <input
+                          type="datetime-local"
+                          className="input w-full text-sm"
+                          value={editForm.date}
+                          onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                        <input
+                          type="text"
+                          className="input w-full text-sm"
+                          value={editForm.imageUrl}
+                          onChange={(e) => setEditForm({ ...editForm, imageUrl: e.target.value })}
+                        />
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Prix</label>
+                          <input
+                            type="number"
+                            className="input w-24 text-sm"
+                            value={editForm.price}
+                            min={0}
+                            step={0.01}
+                            onChange={(e) => setEditForm({ ...editForm, price: parseFloat(e.target.value) || 0 })}
+                          />
+                        </div>
+                        <label className="flex items-center gap-2 mt-4">
+                          <input
+                            type="checkbox"
+                            checked={editForm.isFree}
+                            onChange={(e) => setEditForm({ ...editForm, isFree: e.target.checked })}
+                          />
+                          <span className="text-sm text-gray-600">Gratuit</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                      <textarea
+                        className="input w-full text-sm"
+                        rows={3}
+                        value={editForm.description}
+                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={saveEdit}
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+                      >
+                        Enregistrer
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             {events.length === 0 && !loading && (
