@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const isFree = searchParams.get("free") === "true";
     const dateFrom = searchParams.get("dateFrom") || searchParams.get("from");
     const dateTo = searchParams.get("dateTo") || searchParams.get("to");
+    const includePast = searchParams.get("includePast") === "true";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
 
@@ -39,6 +40,10 @@ export async function GET(request: NextRequest) {
 
     if (isFree) {
       where.isFree = true;
+    }
+
+    if (!includePast && !dateFrom) {
+      where.date = { ...where.date, gte: new Date(new Date().setHours(0, 0, 0, 0)) };
     }
 
     if (dateFrom) {

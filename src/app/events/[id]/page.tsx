@@ -41,7 +41,7 @@ interface SimilarEvent {
   title: string;
   date: string;
   imageUrl: string | null;
-  category: { icon: string; name: string };
+  category: { icon: string; name: string; slug: string };
 }
 
 const BOOST_OPTIONS = [
@@ -73,16 +73,13 @@ export default function EventPage() {
           setEvent(data);
           setRsvpCount(data.rsvpCount ?? 0);
           fetch(`/api/events/${params.id}/view`, { method: "POST" }).catch(() => {});
-          // Fetch similar events by category
-          if (data.categoryId) {
-            fetch(`/api/events?category=${data.category?.slug}&limit=4`)
-              .then((r) => r.json())
-              .then((d) => {
-                const others = (d.events || []).filter((e: SimilarEvent) => e.id !== data.id).slice(0, 3);
-                setSimilarEvents(others);
-              })
-              .catch(() => {});
-          }
+          // Fetch similar events
+          fetch(`/api/events/${params.id}/similar`)
+            .then((r) => r.json())
+            .then((d) => {
+              if (Array.isArray(d)) setSimilarEvents(d);
+            })
+            .catch(() => {});
         }
       })
       .finally(() => setLoading(false));
@@ -460,12 +457,12 @@ export default function EventPage() {
       {similarEvents.length > 0 && (
         <div className="mt-12">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Tu pourrais aussi aimer</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
             {similarEvents.map((e) => (
               <Link
                 key={e.id}
                 href={`/events/${e.id}`}
-                className="card overflow-hidden hover:shadow-md transition-shadow"
+                className="card overflow-hidden hover:shadow-md transition-shadow flex-shrink-0 w-56"
               >
                 <div className="aspect-[16/9] bg-gray-100 relative">
                   {e.imageUrl ? (
@@ -475,12 +472,18 @@ export default function EventPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-primary-50 to-accent-50">
-                      {e.category.icon}
+                    <div
+                      className="w-full h-full flex items-center justify-center text-4xl"
+                      style={{ background: CAT_GRADIENTS[e.category?.slug] || "linear-gradient(135deg, #374151, #9ca3af)" }}
+                    >
+                      <span className="drop-shadow-lg">{e.category?.icon}</span>
                     </div>
                   )}
                 </div>
                 <div className="p-3">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full mb-1.5">
+                    {e.category?.icon} {e.category?.name}
+                  </span>
                   <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">{e.title}</p>
                   <p className="text-xs text-gray-500">{formatDate(e.date)}</p>
                 </div>

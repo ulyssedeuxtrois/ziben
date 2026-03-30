@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ziben.onrender.com";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://ziben.onrender.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

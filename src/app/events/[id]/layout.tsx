@@ -19,12 +19,18 @@ export async function generateMetadata({
     title: `${event.title} — Ziben`,
     description,
     openGraph: {
-      title: event.title,
+      title: `${event.title} — Ziben`,
       description,
       images: event.imageUrl
         ? [event.imageUrl]
         : [{ url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://ziben.onrender.com"}/icons/icon-512.png`, width: 512, height: 512 }],
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${event.title} — Ziben`,
+      description,
+      images: event.imageUrl ? [event.imageUrl] : ["/icons/icon-512.png"],
     },
   };
 }

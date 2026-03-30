@@ -15,9 +15,10 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Ziben — Ce soir, tu fais quoi ?",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://ziben.onrender.com"),
+  title: "Ziben — Ce soir, tu fais quoi ? | Événements à Nice",
   description:
-    "Tous les bons plans près de chez toi : concerts, karaoké, marchés, ateliers, soirées. Trouve ton prochain event en 2 clics.",
+    "Découvre les meilleurs événements à Nice : concerts, marchés, apéros, ateliers, expos. Tous les bons plans, au même endroit.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -34,16 +35,18 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Ziben — Ce soir, tu fais quoi ?",
-    description: "Tous les événements de ta ville en un seul endroit.",
+    title: "Ziben — Ce soir, tu fais quoi ? | Événements à Nice",
+    description: "Découvre les meilleurs événements à Nice : concerts, marchés, apéros, ateliers, expos. Tous les bons plans, au même endroit.",
+    siteName: "Ziben",
     type: "website",
     locale: "fr_FR",
+    url: "/",
     images: [{ url: "/icons/icon-512.png" }],
   },
   twitter: {
-    card: "summary",
-    title: "Ziben",
-    description: "Ce soir, tu fais quoi ?",
+    card: "summary_large_image",
+    title: "Ziben — Ce soir, tu fais quoi ? | Événements à Nice",
+    description: "Découvre les meilleurs événements à Nice : concerts, marchés, apéros, ateliers, expos. Tous les bons plans, au même endroit.",
     images: ["/icons/icon-512.png"],
   },
 };
