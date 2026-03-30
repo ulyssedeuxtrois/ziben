@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ArrowLeft, Sparkles, Eye, Edit3 } from "lucide-react";
 import { AddressAutocomplete } from "@/components/ui/AddressAutocomplete";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import Link from "next/link";
 
 interface Category {
@@ -446,16 +447,10 @@ export default function SubmitPage() {
               />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Image (URL)</label>
-            <input
-              type="url"
-              value={form.imageUrl}
-              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-              className="input"
-              placeholder="https://..."
-            />
-          </div>
+          <ImageUpload
+            value={form.imageUrl}
+            onUpload={(url) => setForm({ ...form, imageUrl: url })}
+          />
         </div>
 
         {error && (

@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { formatDate, formatTime, formatPrice, generateSessionId } from "@/lib/utils";
 import { EventMap } from "@/components/map/EventMap";
+import { EventJsonLd } from "@/components/seo/EventJsonLd";
 import { useAuth } from "@/lib/auth";
 import type { EventWithCategory } from "@/lib/types";
 
@@ -208,6 +209,21 @@ export default function EventPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
+      <EventJsonLd
+        title={event.title}
+        description={event.description}
+        date={new Date(event.date).toISOString()}
+        endDate={event.endDate ? new Date(event.endDate).toISOString() : null}
+        location={event.location}
+        address={event.address}
+        lat={event.lat}
+        lng={event.lng}
+        price={event.price}
+        isFree={event.isFree}
+        imageUrl={event.imageUrl}
+        sourceUrl={event.sourceUrl}
+        eventUrl={typeof window !== "undefined" ? window.location.href : ""}
+      />
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6"
