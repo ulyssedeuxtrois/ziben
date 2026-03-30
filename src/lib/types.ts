@@ -32,6 +32,7 @@ export interface EventWithCategory {
     id: string;
     name: string | null;
   } | null;
+  sourceUrl: string | null;
   boosted: boolean;
   boostedUntil: string | null;
   _count?: {

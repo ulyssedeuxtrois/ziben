@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
           city:        "nice",
           categoryId:  catId,
           organizerId: null,
+          sourceUrl:   e.sourceUrl || null,
           rsvpCount:   0,
           viewCount:   0,
           clickCount:  0,

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { verifyAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/events — list all events for moderation
 export async function GET(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
+
   const status = request.nextUrl.searchParams.get("status") || "";
 
   const where: any = {};
@@ -32,6 +36,9 @@ export async function GET(request: NextRequest) {
 
 // PATCH /api/admin/events — update event status
 export async function PATCH(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
+
   try {
     const { eventId, status } = await request.json();
 

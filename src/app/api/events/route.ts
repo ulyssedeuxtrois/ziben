@@ -49,6 +49,12 @@ export async function GET(request: NextRequest) {
       where.date = { ...where.date, lte: to };
     }
 
+    // Auto-expire les boosts périmés
+    await prisma.event.updateMany({
+      where: { boosted: true, boostedUntil: { lt: new Date() } },
+      data: { boosted: false, boostedUntil: null },
+    });
+
     const [events, total] = await Promise.all([
       prisma.event.findMany({
         where,

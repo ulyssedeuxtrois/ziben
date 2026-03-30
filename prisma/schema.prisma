@@ -50,6 +50,7 @@ model Event {
   clickCount  Int         @default(0)
   submitterName  String?
   submitterEmail String?
+  sourceUrl      String?
   boosted        Boolean   @default(false)
   boostedUntil   DateTime?
   createdAt   DateTime    @default(now())

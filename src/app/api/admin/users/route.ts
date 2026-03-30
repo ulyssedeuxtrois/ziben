@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { verifyAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/users — list all users
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
   const users = await prisma.user.findMany({
     select: {
       id: true,
@@ -25,6 +28,9 @@ export async function GET() {
 
 // PATCH /api/admin/users — update user role
 export async function PATCH(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
+
   try {
     const { userId, role } = await request.json();
 

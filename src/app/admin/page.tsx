@@ -60,10 +60,12 @@ export default function AdminPage() {
     if (tab === "users") fetchUsers();
   }, [tab, statusFilter, isAdmin]);
 
+  const adminHeaders: Record<string, string> = user ? { "x-user-id": user.id } : {};
+
   async function fetchEvents() {
     setLoading(true);
     const params = statusFilter ? `?status=${statusFilter}` : "";
-    const res = await fetch(`/api/admin/events${params}`);
+    const res = await fetch(`/api/admin/events${params}`, { headers: adminHeaders });
     const data = await res.json();
     setEvents(data.events || []);
     setCounts(data.counts || { total: 0, pending: 0, approved: 0, rejected: 0 });
@@ -72,7 +74,7 @@ export default function AdminPage() {
 
   async function fetchUsers() {
     setLoading(true);
-    const res = await fetch("/api/admin/users");
+    const res = await fetch("/api/admin/users", { headers: adminHeaders });
     const data = await res.json();
     setUsers(data.users || []);
     setLoading(false);
@@ -82,7 +84,7 @@ export default function AdminPage() {
     const event = events.find((e) => e.id === eventId);
     await fetch("/api/admin/events", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...adminHeaders },
       body: JSON.stringify({ eventId, status }),
     });
     if (status === "APPROVED" && event) {
@@ -102,7 +104,7 @@ export default function AdminPage() {
   async function updateUserRole(userId: string, role: string) {
     await fetch("/api/admin/users", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...adminHeaders },
       body: JSON.stringify({ userId, role }),
     });
     fetchUsers();

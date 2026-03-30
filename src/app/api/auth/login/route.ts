@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createHash } from "crypto";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 function hashPassword(password: string): string {
   return createHash("sha256")
@@ -10,6 +11,15 @@ function hashPassword(password: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const limit = checkRateLimit(`login:${ip}`);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `Trop de tentatives. Réessaie dans ${limit.retryAfter}s.` },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
