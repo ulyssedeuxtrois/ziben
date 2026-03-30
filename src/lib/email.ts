@@ -118,6 +118,37 @@ export async function sendWeeklyDigest(
   } catch {}
 }
 
+export async function sendEventReminder(
+  to: string,
+  event: { title: string; date: string; location: string; id: string }
+) {
+  if (!resend) return;
+  const d = new Date(event.date);
+  const timeStr = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `Rappel \u2014 ${event.title} c\u2019est demain !`,
+      html: wrap(`
+        <h1 style="font-size:24px;color:#F97066;margin-bottom:8px;">C\u2019est demain !</h1>
+        <p>Tu as indiqu\u00e9 participer \u00e0 cet event demain. On t\u2019y voit !</p>
+        <div style="margin:24px 0;padding:16px 20px;border:1px solid #e5e5e5;border-radius:10px;background:#fafafa;">
+          <div style="font-weight:600;font-size:16px;color:#1a1a1a;margin-bottom:8px;">${event.title}</div>
+          <div style="font-size:14px;color:#666;">
+            \ud83d\udcc5 Demain \u00e0 ${timeStr}<br/>
+            \ud83d\udccd ${event.location}
+          </div>
+        </div>
+        <a href="${BASE_URL}/events/${event.id}" style="display:inline-block;margin:8px 0 20px;padding:12px 28px;background:#F97066;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">
+          Voir l\u2019event
+        </a>
+        <p style="color:#666;font-size:13px;">Tu re\u00e7ois cet email car tu as sauvegard\u00e9 cet event sur Ziben.</p>
+      `),
+    });
+  } catch {}
+}
+
 export async function sendEventSubmitted(to: string, event: { title: string }) {
   if (!resend) return;
   try {

@@ -155,6 +155,14 @@ export async function POST(request: NextRequest) {
     // Authenticated submission
     if (body.organizerId) {
       data.organizerId = body.organizerId;
+
+      // Auto-approve trusted organizers (at least 1 previously approved event)
+      const approvedCount = await prisma.event.count({
+        where: { organizerId: body.organizerId, status: "APPROVED" },
+      });
+      if (approvedCount >= 1) {
+        data.status = "APPROVED";
+      }
     }
 
     // Public submission

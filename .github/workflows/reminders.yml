@@ -1,0 +1,25 @@
+name: 🔔 Ziben Event Reminders
+
+on:
+  schedule:
+    # Tous les jours à 18h00 UTC
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-reminders:
+    name: Send event reminders for tomorrow
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Send reminders
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "x-scraper-secret: ${{ secrets.ZIBEN_IMPORT_SECRET }}" \
+            "${{ secrets.ZIBEN_BASE_URL }}/api/admin/reminders"
+
+      - name: Summary
+        if: always()
+        run: echo "Reminders envoyés — voir les logs ci-dessus"

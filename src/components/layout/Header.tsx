@@ -104,12 +104,15 @@ export function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -118,14 +121,14 @@ export function Header() {
             <nav className="flex flex-col gap-1">
               <Link
                 href="/"
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                 onClick={() => setMenuOpen(false)}
               >
                 Explorer
               </Link>
               <Link
                 href="/map"
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                 onClick={() => setMenuOpen(false)}
               >
                 Carte
@@ -140,7 +143,7 @@ export function Header() {
               {user && (
                 <Link
                   href="/saved"
-                  className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                  className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                   onClick={() => setMenuOpen(false)}
                 >
                   Mes favoris
@@ -150,14 +153,14 @@ export function Header() {
                 <>
                   <Link
                     href="/organizer"
-                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                     onClick={() => setMenuOpen(false)}
                   >
                     Publier un événement
                   </Link>
                   <Link
                     href="/organizer/dashboard"
-                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                     onClick={() => setMenuOpen(false)}
                   >
                     Mes événements
@@ -173,7 +176,7 @@ export function Header() {
                   Administration
                 </Link>
               )}
-              <hr className="my-2 border-gray-100" />
+              <hr className="my-2 border-gray-100 dark:border-gray-800" />
               {user ? (
                 <button
                   onClick={() => {
@@ -188,7 +191,7 @@ export function Header() {
                 <>
                   <Link
                     href="/login"
-                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50"
+                    className="px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
                     onClick={() => setMenuOpen(false)}
                   >
                     Connexion
