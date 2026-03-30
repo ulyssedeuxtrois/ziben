@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "fr.ziben.app",
+    "sha256_cert_fingerprints": [
+      "C5:D8:9D:BC:2D:D2:ED:A4:77:96:BC:54:16:90:7C:AC:2E:34:50:3C:D5:36:F8:BA:E4:18:5F:A0:82:54:8C:1C"
+    ]
+  }
+}]
