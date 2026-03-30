@@ -19,7 +19,8 @@ const DRY_RUN  = process.env.DRY_RUN === "1";
 
 const NICE_LAT  = 43.7102;
 const NICE_LNG  = 7.2620;
-const NICE_BBOX = { minLat: 43.65, maxLat: 43.76, minLng: 7.18, maxLng: 7.35 };
+// ~30km radius around Nice: covers Antibes, Cannes, Menton, Monaco, Vence, Cagnes-sur-Mer
+const NICE_BBOX = { minLat: 43.44, maxLat: 43.90, minLng: 6.90, maxLng: 7.60 };
 
 // ─── Category mapping ──────────────────────────────────────────────────────
 const CAT_MAP = {
@@ -242,7 +243,7 @@ async function scrapeMeetup() {
         query: "nice france",
         lat: ${NICE_LAT},
         lon: ${NICE_LNG},
-        radius: 15,
+        radius: 30,
         startDateRange: "${new Date().toISOString()}",
         numberOfEventsRequested: 30
       }) {

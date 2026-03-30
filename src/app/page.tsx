@@ -97,7 +97,7 @@ export default async function HomePage() {
           {/* Badge ville */}
           <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm text-white/90 text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-white/20">
             <MapPin className="w-3.5 h-3.5" />
-            Nice
+            Côte d'Azur
           </div>
 
           {/* Titre principal — oversized, bold */}
@@ -125,7 +125,7 @@ export default async function HomePage() {
           <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
             Concerts, marchés, apéros, ateliers, expos...
             <br className="hidden sm:block" />
-            Tous les bons plans de Nice, au même endroit.
+            Tous les bons plans de la Côte d'Azur, au même endroit.
           </p>
 
           {/* SearchBar */}
@@ -153,8 +153,8 @@ export default async function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-8">
         <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
           <div className="text-center">
-            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">Nice</div>
-            <div className="text-xs text-gray-500 font-medium">Ville couverte</div>
+            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">Côte d'Azur</div>
+            <div className="text-xs text-gray-500 font-medium">Zone couverte</div>
           </div>
           <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" />
           <div className="text-center">
@@ -233,7 +233,7 @@ export default async function HomePage() {
       {/* ─── EVENTS ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <div className="mb-6">
-          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">À venir à Nice</h2>
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">À venir sur la Côte d'Azur</h2>
           <p className="text-sm text-gray-500 mt-0.5">Tous les events, filtrés et à jour</p>
         </div>
 
@@ -283,7 +283,7 @@ export default async function HomePage() {
               </h2>
               <p className="text-gray-400 max-w-md text-base">
                 Karaoké, vide-grenier, concert, atelier...
-                Publie ton event <strong className="text-white">gratuitement</strong> et touche les Niçois autour de toi.
+                Publie ton event <strong className="text-white">gratuitement</strong> et touche les gens autour de toi.
               </p>
             </div>
             <Link

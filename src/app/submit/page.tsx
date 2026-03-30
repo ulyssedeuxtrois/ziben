@@ -22,6 +22,7 @@ interface FormData {
   time: string;
   endDate: string;
   endTime: string;
+  city: string;
   location: string;
   address: string;
   lat: number;
@@ -50,6 +51,7 @@ export default function SubmitPage() {
     time: "",
     endDate: "",
     endTime: "",
+    city: "nice",
     location: "",
     address: "",
     lat: 43.7102,
@@ -106,7 +108,7 @@ export default function SubmitPage() {
           capacity: form.capacity ? parseInt(form.capacity) : null,
           submitterName: form.submitterName,
           submitterEmail: form.submitterEmail,
-          city: "nice",
+          city: form.city,
         }),
       });
 
@@ -273,6 +275,29 @@ export default function SubmitPage() {
       </div>
 
       <form onSubmit={handlePreview} className="space-y-6">
+        {/* Photo — en premier, mis en avant */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              📸 Photo de l&apos;événement
+            </h2>
+            {!form.imageUrl && (
+              <span className="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-full">
+                Recommandé — booste tes vues ×3
+              </span>
+            )}
+          </div>
+          <ImageUpload
+            value={form.imageUrl}
+            onUpload={(url) => setForm({ ...form, imageUrl: url })}
+          />
+          {!form.imageUrl && (
+            <p className="text-xs text-gray-400">
+              Les événements avec photo reçoivent en moyenne 3× plus de clics. Ajoute une belle image !
+            </p>
+          )}
+        </div>
+
         {/* Submitter info */}
         <div className="bg-warm-100/50 rounded-2xl p-5 space-y-4">
           <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Tes infos</h2>
@@ -389,6 +414,24 @@ export default function SubmitPage() {
         <div className="space-y-4">
           <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Où</h2>
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ville *</label>
+            <select
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              className="input"
+            >
+              <option value="nice">Nice</option>
+              <option value="villefranche-sur-mer">Villefranche-sur-Mer</option>
+              <option value="beausoleil">Beausoleil</option>
+              <option value="cagnes-sur-mer">Cagnes-sur-Mer</option>
+              <option value="antibes">Antibes</option>
+              <option value="monaco">Monaco</option>
+              <option value="menton">Menton</option>
+              <option value="eze">Èze</option>
+              <option value="saint-jean-cap-ferrat">Saint-Jean-Cap-Ferrat</option>
+            </select>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nom du lieu *</label>
             <input
               type="text"
@@ -447,10 +490,6 @@ export default function SubmitPage() {
               />
             </div>
           </div>
-          <ImageUpload
-            value={form.imageUrl}
-            onUpload={(url) => setForm({ ...form, imageUrl: url })}
-          />
         </div>
 
         {error && (
