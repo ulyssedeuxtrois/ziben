@@ -13,6 +13,7 @@ import {
   Calendar,
   Eye,
   ChevronDown,
+  Trash2,
 } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
 
@@ -100,6 +101,18 @@ export default function AdminPage() {
       }).catch(() => {});
     }
     fetchEvents();
+  }
+
+  async function deleteEvent(eventId: string) {
+    if (!window.confirm("Supprimer cet événement ?")) return;
+    const res = await fetch("/api/admin/events", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", ...adminHeaders },
+      body: JSON.stringify({ eventId }),
+    });
+    if (res.ok) {
+      setEvents((prev) => prev.filter((e) => e.id !== eventId));
+    }
   }
 
   async function updateUserRole(userId: string, role: string) {
@@ -247,6 +260,13 @@ export default function AdminPage() {
                         Rejeter
                       </button>
                     )}
+                    <button
+                      onClick={() => deleteEvent(event.id)}
+                      className="flex items-center gap-1 px-2 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>

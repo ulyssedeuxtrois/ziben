@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { MapPin, Heart, Users, Zap } from "lucide-react";
-import { formatTime, formatPrice, formatRelativeDate, formatCapacity } from "@/lib/utils";
+import { formatTime, formatPrice, formatRelativeDate, formatCapacity, formatCountdown } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 import { useState } from "react";
 import type { EventWithCategory } from "@/lib/types";
@@ -54,6 +54,7 @@ export function EventCard({ event }: EventCardProps) {
   const [saving, setSaving] = useState(false);
 
   const relativeDate = formatRelativeDate(event.date);
+  const countdown = formatCountdown(event.date);
   const capacityText = formatCapacity(event.capacity, event.rsvpCount);
   const isTonight = relativeDate === "Ce soir";
   const isBoosted = event.boosted && event.boostedUntil && new Date(event.boostedUntil) > new Date();
@@ -116,14 +117,20 @@ export function EventCard({ event }: EventCardProps) {
         )}
 
         {/* Date — bas gauche */}
-        <div className="absolute bottom-3 left-3">
-          <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
-            isTonight
-              ? "bg-primary-500 text-white shadow-lg shadow-primary-500/40"
-              : "bg-white/90 backdrop-blur-sm text-gray-800"
-          }`}>
-            {relativeDate} · {formatTime(event.date)}
-          </span>
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+          {countdown ? (
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/40 animate-pulse">
+              🔴 {countdown}
+            </span>
+          ) : (
+            <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
+              isTonight
+                ? "bg-primary-500 text-white shadow-lg shadow-primary-500/40"
+                : "bg-white/90 backdrop-blur-sm text-gray-800"
+            }`}>
+              {relativeDate} · {formatTime(event.date)}
+            </span>
+          )}
         </div>
 
         {/* Prix — bas droite */}
@@ -137,11 +144,11 @@ export function EventCard({ event }: EventCardProps) {
       </div>
 
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 group-hover:text-primary-500 transition-colors line-clamp-1 text-[15px]">
+        <h3 className="font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-500 transition-colors line-clamp-1 text-[15px]">
           {event.title}
         </h3>
 
-        <div className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500">
+        <div className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
           <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
           <span className="line-clamp-1">{event.location}</span>
         </div>

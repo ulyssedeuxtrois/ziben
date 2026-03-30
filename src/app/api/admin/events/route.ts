@@ -74,3 +74,31 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
+
+// DELETE /api/admin/events — delete an event and related records
+export async function DELETE(request: NextRequest) {
+  const auth = await verifyAdmin(request);
+  if (auth.error) return auth.error;
+
+  try {
+    const { eventId } = await request.json();
+
+    if (!eventId) {
+      return NextResponse.json(
+        { error: "eventId requis" },
+        { status: 400 }
+      );
+    }
+
+    await prisma.event.delete({
+      where: { id: eventId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Erreur lors de la suppression" },
+      { status: 500 }
+    );
+  }
+}

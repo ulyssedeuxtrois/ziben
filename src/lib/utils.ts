@@ -100,6 +100,31 @@ export function formatCapacity(capacity: number | null, rsvpCount: number): stri
   return `${remaining} places`;
 }
 
+export function formatCountdown(date: string | Date): string | null {
+  const d = new Date(date);
+  const now = new Date();
+
+  // Not today? Return null
+  if (
+    d.getFullYear() !== now.getFullYear() ||
+    d.getMonth() !== now.getMonth() ||
+    d.getDate() !== now.getDate()
+  ) return null;
+
+  const diffMs = d.getTime() - now.getTime();
+
+  // Already started
+  if (diffMs < 0) return null;
+
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin < 15) return "Maintenant !";
+  if (diffMin < 60) return `Dans ${diffMin}min`;
+
+  const diffH = Math.floor(diffMin / 60);
+  return `Dans ${diffH}h`;
+}
+
 export function formatRelativeDate(date: string | Date): string {
   const d = new Date(date);
   const now = new Date();
