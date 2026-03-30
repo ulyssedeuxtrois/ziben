@@ -8,6 +8,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "userId requis" }, { status: 400 });
   }
 
+  const callerId = request.headers.get("x-user-id");
+  const callerRole = request.headers.get("x-user-role");
+  if (callerId !== userId && callerRole !== "ADMIN") {
+    return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+  }
+
   const events = await prisma.event.findMany({
     where: { organizerId: userId },
     include: {

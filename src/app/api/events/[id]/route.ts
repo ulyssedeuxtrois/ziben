@@ -31,6 +31,28 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const userId = request.headers.get("x-user-id");
+    if (!userId) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    const existing = await prisma.event.findUnique({
+      where: { id: params.id },
+      include: { organizer: { select: { role: true } } },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    const isAdmin = user?.role === "ADMIN";
+    const isOwner = existing.organizerId === userId;
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+
     const body = await request.json();
 
     const event = await prisma.event.update({
@@ -48,7 +70,6 @@ export async function PUT(
         isFree: body.isFree,
         imageUrl: body.imageUrl,
         categoryId: body.categoryId,
-        status: body.status,
       },
       include: { category: true },
     });
@@ -68,6 +89,25 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const userId = request.headers.get("x-user-id");
+    if (!userId) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    const existing = await prisma.event.findUnique({ where: { id: params.id } });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    const isAdmin = user?.role === "ADMIN";
+    const isOwner = existing.organizerId === userId;
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+
     await prisma.event.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
   } catch (error) {

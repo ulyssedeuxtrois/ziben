@@ -152,16 +152,23 @@ export async function POST(request: NextRequest) {
       status: "PENDING",
     };
 
-    // Authenticated submission
-    if (body.organizerId) {
-      data.organizerId = body.organizerId;
-
-      // Auto-approve trusted organizers (at least 1 previously approved event)
-      const approvedCount = await prisma.event.count({
-        where: { organizerId: body.organizerId, status: "APPROVED" },
+    // Authenticated submission — use x-user-id header, never trust body.organizerId
+    const headerUserId = request.headers.get("x-user-id");
+    if (headerUserId) {
+      const organizer = await prisma.user.findFirst({
+        where: { id: headerUserId, role: "ORGANIZER" },
+        select: { id: true },
       });
-      if (approvedCount >= 1) {
-        data.status = "APPROVED";
+      if (organizer) {
+        data.organizerId = organizer.id;
+
+        // Auto-approve trusted organizers (at least 1 previously approved event)
+        const approvedCount = await prisma.event.count({
+          where: { organizerId: organizer.id, status: "APPROVED" },
+        });
+        if (approvedCount >= 1) {
+          data.status = "APPROVED";
+        }
       }
     }
 
@@ -184,7 +191,7 @@ export async function POST(request: NextRequest) {
       date: event.date,
       submitterName: event.submitterName,
       submitterEmail: event.submitterEmail,
-      source: body.organizerId ? "organizer" : "public",
+      source: data.organizerId ? "organizer" : "public",
     }).catch(() => {});
 
     if (event.submitterEmail) {

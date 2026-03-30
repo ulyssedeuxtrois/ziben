@@ -275,7 +275,7 @@ export default function EventPage() {
         isFree={event.isFree}
         imageUrl={event.imageUrl}
         sourceUrl={event.sourceUrl}
-        eventUrl={typeof window !== "undefined" ? window.location.href : ""}
+        eventUrl={typeof window !== "undefined" ? window.location.href : `${process.env.NEXT_PUBLIC_BASE_URL || "https://ziben.onrender.com"}/events/${event.id}`}
       />
       <Link
         href="/"
@@ -379,12 +379,21 @@ export default function EventPage() {
 
           <div className="mt-8">
             <h2 className="text-lg font-semibold mb-3">Localisation</h2>
-            <EventMap
-              events={[event]}
-              center={[event.lat, event.lng]}
-              zoom={15}
-              className="w-full h-[300px] rounded-2xl"
-            />
+            {event.lat && event.lng ? (
+              <EventMap
+                events={[event]}
+                center={[event.lat, event.lng]}
+                zoom={15}
+                className="w-full h-[300px] rounded-2xl"
+              />
+            ) : (
+              <EventMap
+                events={[event]}
+                center={[43.7102, 7.262]}
+                zoom={13}
+                className="w-full h-[300px] rounded-2xl"
+              />
+            )}
           </div>
         </div>
 

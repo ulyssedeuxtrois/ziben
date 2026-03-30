@@ -9,6 +9,26 @@ webpush.setVapidDetails(
 );
 
 export async function POST(request: NextRequest) {
+  // Auth: require either a valid ADMIN user (x-user-id) or the scraper secret
+  const scraperSecret = request.headers.get("x-scraper-secret");
+  const userId = request.headers.get("x-user-id");
+
+  let authorized = false;
+
+  if (scraperSecret && scraperSecret === process.env.SCRAPER_SECRET) {
+    authorized = true;
+  } else if (userId) {
+    const admin = await prisma.user.findFirst({
+      where: { id: userId, role: "ADMIN" },
+      select: { id: true },
+    });
+    if (admin) authorized = true;
+  }
+
+  if (!authorized) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { title, body, url } = await request.json();
 

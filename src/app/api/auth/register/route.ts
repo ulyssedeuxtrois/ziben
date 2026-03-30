@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { createHash } from "crypto";
 import { notifyNewOrganizer } from "@/lib/notify";
 import { sendWelcomeOrganizer } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 function hashPassword(password: string): string {
   return createHash("sha256")
@@ -12,6 +13,15 @@ function hashPassword(password: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    const limit = checkRateLimit(`register:${ip}`);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: `Trop de tentatives. Réessaie dans ${limit.retryAfter}s.` },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, password, name, role } = body;
 
