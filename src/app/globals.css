@@ -33,14 +33,23 @@
   }
 
   .card {
-    @apply rounded-2xl border border-warm-100 overflow-hidden transition-all duration-300 dark:bg-gray-900 dark:border-gray-800;
+    @apply rounded-2xl border border-warm-100 overflow-hidden transition-all duration-300 dark:border-gray-800;
     background-color: #fffdf9;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .dark .card {
+    background-color: #111827;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
   }
 
   .card:hover {
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     transform: translateY(-6px);
+  }
+
+  .dark .card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   }
 
   .glass {
@@ -73,10 +82,22 @@
     border-bottom: 1px solid #BFDBFE;
   }
 
+  .dark .section-warm {
+    background-color: #0a0f1a;
+    border-top: 1px solid #1e293b;
+    border-bottom: 1px solid #1e293b;
+  }
+
   .section-coral {
     background-color: #FFE8DE;
     border-top: 1px solid #FFCBB8;
     border-bottom: 1px solid #FFCBB8;
+  }
+
+  .dark .section-coral {
+    background-color: #0d0b0a;
+    border-top: 1px solid #292524;
+    border-bottom: 1px solid #292524;
   }
 }
 
