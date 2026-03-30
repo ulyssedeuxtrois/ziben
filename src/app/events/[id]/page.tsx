@@ -75,6 +75,17 @@ export default function EventPage() {
   }, [params.id]);
 
   useEffect(() => {
+    if (!user || !event) return;
+    fetch(`/api/events/saved?userId=${user.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const isSaved = (data.events || []).some((e: { id: string }) => e.id === event.id);
+        setSaved(isSaved);
+      })
+      .catch(() => {});
+  }, [user, event]);
+
+  useEffect(() => {
     if (event) {
       document.title = `${event.title} — Ziben`;
     }
