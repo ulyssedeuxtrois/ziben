@@ -23,7 +23,9 @@ interface AdminEvent {
   status: string;
   createdAt: string;
   category: { name: string; icon: string };
-  organizer: { name: string | null; email: string };
+  organizer: { name: string | null; email: string } | null;
+  submitterName: string | null;
+  submitterEmail: string | null;
   _count: { savedBy: number };
 }
 
@@ -208,7 +210,7 @@ export default function AdminPage() {
                     <div className="text-sm text-gray-500 space-y-0.5">
                       <p>{formatDate(event.date)} · {formatTime(event.date)} · {event.location}</p>
                       <p>
-                        Par : {event.organizer.name || event.organizer.email} ·{" "}
+                        Par : {event.organizer ? (event.organizer.name || event.organizer.email) : (event.submitterName || event.submitterEmail || "Anonyme")} ·{" "}
                         {event._count.savedBy} favoris
                       </p>
                     </div>
