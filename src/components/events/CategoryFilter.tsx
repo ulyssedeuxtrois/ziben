@@ -6,18 +6,18 @@ import { cn } from "@/lib/utils";
 
 // Couleur d'accent par catégorie quand inactive
 const CAT_INACTIVE_STYLE: Record<string, string> = {
-  "musique-soirees":        "bg-violet-50 text-violet-700 border-violet-100 hover:bg-violet-100",
-  "arts-spectacles":        "bg-rose-50 text-rose-700 border-rose-100 hover:bg-rose-100",
-  "culture-expositions":    "bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-100",
-  "conferences-savoirs":    "bg-teal-50 text-teal-700 border-teal-100 hover:bg-teal-100",
-  "vie-locale":             "bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100",
-  "sport-bien-etre":        "bg-green-50 text-green-700 border-green-100 hover:bg-green-100",
-  "food-degustations":      "bg-orange-50 text-orange-700 border-orange-100 hover:bg-orange-100",
-  "famille-enfants":        "bg-pink-50 text-pink-700 border-pink-100 hover:bg-pink-100",
-  "nature-decouvertes":     "bg-lime-50 text-lime-700 border-lime-100 hover:bg-lime-100",
-  "jeux-geek":              "bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100",
-  "business-networking":    "bg-slate-50 text-slate-700 border-slate-100 hover:bg-slate-100",
-  "evenements-saisonniers": "bg-sky-50 text-sky-700 border-sky-100 hover:bg-sky-100",
+  "musique-soirees":        "bg-violet-100 text-violet-800 border-violet-200 hover:bg-violet-200",
+  "arts-spectacles":        "bg-rose-100 text-rose-800 border-rose-200 hover:bg-rose-200",
+  "culture-expositions":    "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200",
+  "conferences-savoirs":    "bg-teal-100 text-teal-800 border-teal-200 hover:bg-teal-200",
+  "vie-locale":             "bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200",
+  "sport-bien-etre":        "bg-green-100 text-green-800 border-green-200 hover:bg-green-200",
+  "food-degustations":      "bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200",
+  "famille-enfants":        "bg-pink-100 text-pink-800 border-pink-200 hover:bg-pink-200",
+  "nature-decouvertes":     "bg-lime-100 text-lime-800 border-lime-200 hover:bg-lime-200",
+  "jeux-geek":              "bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200",
+  "business-networking":    "bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200",
+  "evenements-saisonniers": "bg-sky-100 text-sky-800 border-sky-200 hover:bg-sky-200",
 };
 
 // Couleur d'accent par catégorie quand active

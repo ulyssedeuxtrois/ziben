@@ -145,7 +145,7 @@ export default async function HomePage() {
       {/* Wave separator */}
       <div className="relative -mt-8 z-10 pointer-events-none">
         <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path d="M0 0C360 60 1080 60 1440 0V60H0V0Z" fill="#faf8f5" className="dark:fill-gray-950" />
+          <path d="M0 0C360 60 1080 60 1440 0V60H0V0Z" fill="#FFF5F0" className="dark:fill-gray-950" />
         </svg>
       </div>
 

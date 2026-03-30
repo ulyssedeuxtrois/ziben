@@ -5,8 +5,7 @@
 @layer base {
   body {
     @apply text-gray-900 antialiased dark:text-gray-100;
-    background: linear-gradient(180deg, #fff7f4 0%, #faf8f5 40%, #f5f3ef 100%);
-    background-attachment: fixed;
+    background-color: #FFF5F0;
   }
 
   .dark body {
@@ -69,13 +68,15 @@
   }
 
   .section-warm {
-    background: linear-gradient(135deg, #fff5f0 0%, #fffbf5 50%, #f0fdf4 100%);
+    background-color: #EDF5FF;
+    border-top: 1px solid #BFDBFE;
+    border-bottom: 1px solid #BFDBFE;
   }
 
   .section-coral {
-    background: linear-gradient(135deg, #fff1ed 0%, #fff5f0 100%);
-    border-top: 1px solid #ffe4dc;
-    border-bottom: 1px solid #ffe4dc;
+    background-color: #FFE8DE;
+    border-top: 1px solid #FFCBB8;
+    border-bottom: 1px solid #FFCBB8;
   }
 }
 
