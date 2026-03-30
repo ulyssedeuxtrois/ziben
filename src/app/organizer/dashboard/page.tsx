@@ -16,6 +16,7 @@ import {
   Users,
   Bookmark,
   Trophy,
+  Copy,
 } from "lucide-react";
 import { formatDate, formatTime, formatPrice } from "@/lib/utils";
 
@@ -54,6 +55,7 @@ export default function OrganizerDashboard() {
   });
   const [stats, setStats] = useState<OrgStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !isOrganizer) {
@@ -91,10 +93,30 @@ export default function OrganizerDashboard() {
     fetchStats();
   }
 
+  async function duplicateEvent(eventId: string) {
+    const res = await fetch(`/api/organizer/events/${eventId}/duplicate`, {
+      method: "POST",
+      headers: { "x-user-id": user!.id },
+    });
+    if (res.ok) {
+      setToast("Événement dupliqué ! En attente de validation.");
+      setTimeout(() => setToast(null), 3500);
+      fetchEvents();
+      fetchStats();
+    }
+  }
+
   if (authLoading || !isOrganizer) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm px-4 py-2 rounded-full shadow-lg">
+          {toast}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -221,13 +243,22 @@ export default function OrganizerDashboard() {
                     {event._count.savedBy} favoris
                   </div>
                 </div>
-                <button
-                  onClick={() => deleteEvent(event.id)}
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Supprimer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => duplicateEvent(event.id)}
+                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Dupliquer"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => deleteEvent(event.id)}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

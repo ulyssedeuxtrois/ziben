@@ -149,6 +149,28 @@ export async function sendEventReminder(
   } catch {}
 }
 
+export async function sendBoostExpiringSoon(
+  to: string,
+  event: { title: string; id: string; boostedUntil: Date }
+) {
+  if (!resend) return;
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: "Ton boost Ziben expire demain \u2014 renouvelle-le !",
+      html: wrap(`
+        <h1 style="font-size:24px;color:#F97066;margin-bottom:8px;">Ton boost expire demain !</h1>
+        <p>Ton event <strong>${event.title}</strong> est mis en avant jusqu\u2019\u00e0 demain. Pour continuer \u00e0 appara\u00eetre en t\u00eate des r\u00e9sultats, renouvelle ton boost.</p>
+        <a href="${BASE_URL}/events/${event.id}" style="display:inline-block;margin:20px 0;padding:12px 28px;background:#F97066;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">
+          Renouveler mon boost
+        </a>
+        <p style="color:#666;font-size:13px;">Sans renouvellement, ton event reviendra dans l\u2019ordre chronologique standard d\u00e8s demain.</p>
+      `),
+    });
+  } catch {}
+}
+
 export async function sendEventSubmitted(to: string, event: { title: string }) {
   if (!resend) return;
   try {

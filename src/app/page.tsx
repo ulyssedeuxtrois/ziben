@@ -4,7 +4,24 @@ import { SearchBar } from "@/components/events/SearchBar";
 import { CategoryFilter } from "@/components/events/CategoryFilter";
 import { EventList } from "@/components/events/EventList";
 import { TimeFilter } from "@/components/events/TimeFilter";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, Calendar } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+
+const CAT_GRADIENTS: Record<string, string> = {
+  "musique-soirees":        "linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a855f7 100%)",
+  "arts-spectacles":        "linear-gradient(135deg, #881337 0%, #e11d48 50%, #fb7185 100%)",
+  "culture-expositions":    "linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #60a5fa 100%)",
+  "conferences-savoirs":    "linear-gradient(135deg, #134e4a 0%, #0d9488 50%, #2dd4bf 100%)",
+  "vie-locale":             "linear-gradient(135deg, #92400e 0%, #d97706 50%, #fbbf24 100%)",
+  "sport-bien-etre":        "linear-gradient(135deg, #14532d 0%, #16a34a 50%, #4ade80 100%)",
+  "food-degustations":      "linear-gradient(135deg, #78350f 0%, #ea580c 50%, #fb923c 100%)",
+  "famille-enfants":        "linear-gradient(135deg, #831843 0%, #ec4899 50%, #f9a8d4 100%)",
+  "nature-decouvertes":     "linear-gradient(135deg, #1a2e05 0%, #4d7c0f 50%, #84cc16 100%)",
+  "jeux-geek":              "linear-gradient(135deg, #312e81 0%, #4338ca 50%, #818cf8 100%)",
+  "business-networking":    "linear-gradient(135deg, #1e293b 0%, #334155 50%, #64748b 100%)",
+  "evenements-saisonniers": "linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #38bdf8 100%)",
+};
+const DEFAULT_GRADIENT = "linear-gradient(135deg, #374151 0%, #6b7280 50%, #9ca3af 100%)";
 
 // Petites pills déco dans le hero — vibes locales
 const HERO_PILLS = [
@@ -16,7 +33,33 @@ const HERO_PILLS = [
   { icon: "🎮", label: "Jeux", top: "42%", right: "4%", rotate: "-5deg", delay: "0.6s" },
 ];
 
-export default function HomePage() {
+async function getTrendingEvents() {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 14);
+
+  const events = await prisma.event.findMany({
+    where: {
+      status: "APPROVED",
+      date: { gte: cutoff },
+    },
+    include: {
+      category: true,
+      _count: { select: { savedBy: true } },
+    },
+  });
+
+  return events
+    .map((e) => ({
+      ...e,
+      score: e.viewCount * 1 + e.rsvpCount * 3 + e._count.savedBy * 2,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+}
+
+export default async function HomePage() {
+  const trendingEvents = await getTrendingEvents();
+
   return (
     <div>
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
@@ -98,6 +141,67 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ─── TENDANCES ────────────────────────────────────────────────────── */}
+      {trendingEvents.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
+          <div className="mb-5">
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+              🔥 En ce moment
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              Les events qui buzzent à Nice
+            </p>
+          </div>
+
+          {/* Scroll horizontal sur mobile, grille 4 colonnes sur desktop */}
+          <div className="flex gap-4 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible scrollbar-hide">
+            {trendingEvents.map((event) => {
+              const gradient = CAT_GRADIENTS[event.category.slug] ?? DEFAULT_GRADIENT;
+              const dateObj = new Date(event.date);
+              const dayLabel = dateObj.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+
+              return (
+                <Link
+                  key={event.id}
+                  href={`/events/${event.id}`}
+                  className="group relative flex-shrink-0 w-64 sm:w-auto rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200"
+                  style={{ background: gradient }}
+                >
+                  {/* Déco cercles */}
+                  <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/10" />
+                  <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full bg-white/10" />
+
+                  <div className="relative p-4 flex flex-col gap-3 h-full min-h-[140px]">
+                    {/* Badge catégorie */}
+                    <span className="inline-flex items-center gap-1 self-start bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                      <span>{event.category.icon}</span>
+                      <span>{event.category.name}</span>
+                    </span>
+
+                    {/* Titre */}
+                    <p className="text-white font-bold text-base leading-tight line-clamp-2 flex-1 group-hover:underline underline-offset-2">
+                      {event.title}
+                    </p>
+
+                    {/* Date + lieu */}
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-white/80 text-xs">
+                        <Calendar className="w-3 h-3 shrink-0" />
+                        <span className="capitalize">{dayLabel}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-white/80 text-xs">
+                        <MapPin className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{event.location}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ─── EVENTS ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">

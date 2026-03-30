@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Trash2,
   Pencil,
+  Download,
 } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
 
@@ -164,6 +165,17 @@ export default function AdminPage() {
     }
   }
 
+  async function exportCSV(type: "events" | "leads") {
+    const res = await fetch(`/api/admin/export?type=${type}`, { headers: adminHeaders });
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ziben-${type}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function sendDigest() {
     if (!window.confirm("Envoyer le digest à tous les utilisateurs ?")) return;
     setDigestStatus("Envoi en cours...");
@@ -210,6 +222,18 @@ export default function AdminPage() {
           <Link href="/admin/leads" className="btn-secondary text-sm flex items-center gap-1.5">
             <Users className="w-4 h-4" /> Leads
           </Link>
+          <button
+            onClick={() => exportCSV("events")}
+            className="btn-secondary text-sm flex items-center gap-1.5"
+          >
+            <Download className="w-4 h-4" /> Events CSV
+          </button>
+          <button
+            onClick={() => exportCSV("leads")}
+            className="btn-secondary text-sm flex items-center gap-1.5"
+          >
+            <Download className="w-4 h-4" /> Leads CSV
+          </button>
           <button
             onClick={sendDigest}
             disabled={digestStatus === "Envoi en cours..."}
