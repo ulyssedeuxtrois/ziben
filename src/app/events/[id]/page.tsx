@@ -20,6 +20,21 @@ import { EventMap } from "@/components/map/EventMap";
 import { useAuth } from "@/lib/auth";
 import type { EventWithCategory } from "@/lib/types";
 
+const CAT_GRADIENTS: Record<string, string> = {
+  "musique-soirees":        "linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a855f7 100%)",
+  "arts-spectacles":        "linear-gradient(135deg, #881337 0%, #e11d48 50%, #fb7185 100%)",
+  "culture-expositions":    "linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #60a5fa 100%)",
+  "conferences-savoirs":    "linear-gradient(135deg, #134e4a 0%, #0d9488 50%, #2dd4bf 100%)",
+  "vie-locale":             "linear-gradient(135deg, #92400e 0%, #d97706 50%, #fbbf24 100%)",
+  "sport-bien-etre":        "linear-gradient(135deg, #14532d 0%, #16a34a 50%, #4ade80 100%)",
+  "food-degustations":      "linear-gradient(135deg, #78350f 0%, #ea580c 50%, #fb923c 100%)",
+  "famille-enfants":        "linear-gradient(135deg, #831843 0%, #ec4899 50%, #f9a8d4 100%)",
+  "nature-decouvertes":     "linear-gradient(135deg, #1a2e05 0%, #4d7c0f 50%, #84cc16 100%)",
+  "jeux-geek":              "linear-gradient(135deg, #312e81 0%, #4338ca 50%, #818cf8 100%)",
+  "business-networking":    "linear-gradient(135deg, #1e293b 0%, #334155 50%, #64748b 100%)",
+  "evenements-saisonniers": "linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #38bdf8 100%)",
+};
+
 interface SimilarEvent {
   id: string;
   title: string;
@@ -216,8 +231,15 @@ export default function EventPage() {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-primary-100 to-accent-100">
-            {event.category.icon}
+          <div
+            className="w-full h-full flex items-center justify-center relative overflow-hidden"
+            style={{ background: CAT_GRADIENTS[event.category.slug] || "linear-gradient(135deg, #374151, #9ca3af)" }}
+          >
+            <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full opacity-20 bg-white" />
+            <div className="absolute -bottom-16 -left-8 w-56 h-56 rounded-full opacity-15 bg-white" />
+            <span className="relative text-7xl" style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.4))" }}>
+              {event.category.icon}
+            </span>
           </div>
         )}
       </div>
