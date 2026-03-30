@@ -77,8 +77,11 @@ export function EventCard({ event }: EventCardProps) {
     setSaving(false);
   }
 
+  const style = CAT_STYLES[event.category.slug] || DEFAULT_STYLE;
+
   return (
     <Link href={`/events/${event.id}`} className="card group block">
+      <div className="h-1 w-full" style={{ background: style.gradient }} />
       <div className="relative aspect-[4/3] overflow-hidden">
         {event.imageUrl ? (
           <img
@@ -143,13 +146,13 @@ export function EventCard({ event }: EventCardProps) {
         </span>
       </div>
 
-      <div className="p-4">
+      <div className="px-4 pt-3 pb-4">
         <h3 className="font-bold text-gray-900 dark:text-gray-100 group-hover:text-primary-500 transition-colors line-clamp-1 text-[15px]">
           {event.title}
         </h3>
 
         <div className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-primary-400" />
           <span className="line-clamp-1">{event.location}</span>
           {event.distanceKm != null && (
             <span className="ml-auto flex-shrink-0 text-xs font-medium text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">
@@ -163,7 +166,7 @@ export function EventCard({ event }: EventCardProps) {
         {(event.rsvpCount > 0 || capacityText) && (
           <div className="mt-2 flex items-center gap-3">
             {event.rsvpCount > 0 && (
-              <span className="flex items-center gap-1 text-xs text-primary-600 font-medium">
+              <span className="flex items-center gap-1 text-xs text-primary-600 font-medium bg-primary-50 dark:bg-primary-900/20 rounded-full px-2.5 py-0.5">
                 <Users className="w-3 h-3" />
                 {event.rsvpCount} y {event.rsvpCount > 1 ? "vont" : "va"}
               </span>

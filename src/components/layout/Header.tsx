@@ -16,10 +16,10 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/40">
               <MapPin className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-extrabold text-gray-900 dark:text-gray-100">Ziben</span>
+            <span className="text-xl font-extrabold bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent">Ziben</span>
           </Link>
 
           {/* Desktop nav */}
@@ -40,6 +40,10 @@ export function Header() {
               href="/submit"
               className="flex items-center gap-1.5 text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors"
             >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+              </span>
               <Sparkles className="w-4 h-4" />
               Proposer un event
             </Link>

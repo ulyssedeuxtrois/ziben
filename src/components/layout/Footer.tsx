@@ -3,7 +3,8 @@ import { MapPin, Heart } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 mt-16">
+    <footer style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '20px 20px' }} className="bg-gray-900 mt-16">
+      <div className="h-1 w-full bg-gradient-to-r from-primary-500 via-accent-400 to-primary-400" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
@@ -15,8 +16,7 @@ export function Footer() {
               <span className="text-lg font-bold text-white">Ziben</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
-              Tous les bons plans de ta ville en un seul endroit.
-              Trouve ton prochain event en 2 clics.
+              Ziben, c&apos;est le spot de référence des sorties niçoises. Pas besoin de chercher partout.
             </p>
           </div>
 
@@ -63,7 +63,7 @@ export function Footer() {
             <Link href="/privacy" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">Confidentialité</Link>
             <Link href="/cgu" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">CGU</Link>
             <p className="text-xs text-gray-500 flex items-center gap-1">
-              Fait avec <Heart className="w-3 h-3 text-primary-500" /> à Nice
+              Fait avec <Heart className="w-3 h-3 text-primary-500" /> à Nice · Made in Nice 🌴
             </p>
           </div>
         </div>

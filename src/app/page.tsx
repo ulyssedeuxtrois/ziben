@@ -142,16 +142,43 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Wave separator */}
+      <div className="relative -mt-8 z-10 pointer-events-none">
+        <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <path d="M0 0C360 60 1080 60 1440 0V60H0V0Z" fill="#faf8f5" className="dark:fill-gray-950" />
+        </svg>
+      </div>
+
+      {/* Stats strip */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-8">
+        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+          <div className="text-center">
+            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">Nice</div>
+            <div className="text-xs text-gray-500 font-medium">Ville couverte</div>
+          </div>
+          <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" />
+          <div className="text-center">
+            <div className="text-2xl font-extrabold text-primary-500">Gratuit</div>
+            <div className="text-xs text-gray-500 font-medium">Pour tout le monde</div>
+          </div>
+          <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" />
+          <div className="text-center">
+            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">24/7</div>
+            <div className="text-xs text-gray-500 font-medium">Mis à jour</div>
+          </div>
+        </div>
+      </div>
+
       {/* ─── TENDANCES ────────────────────────────────────────────────────── */}
       {trendingEvents.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
-          <div className="mb-5">
-            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <div className="flex items-end justify-between mb-5">
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
               🔥 En ce moment
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-              Les events qui buzzent à Nice
-            </p>
+            <Link href="/?sortBy=trending" className="text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors">
+              Voir tout
+            </Link>
           </div>
 
           {/* Scroll horizontal sur mobile, grille 4 colonnes sur desktop */}
@@ -205,6 +232,11 @@ export default async function HomePage() {
 
       {/* ─── EVENTS ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        <div className="mb-6">
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">À venir à Nice</h2>
+          <p className="text-sm text-gray-500 mt-0.5">Tous les events, filtrés et à jour</p>
+        </div>
+
         {/* Filtre catégories */}
         <Suspense>
           <CategoryFilter />
