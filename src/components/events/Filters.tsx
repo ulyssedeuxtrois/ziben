@@ -155,18 +155,20 @@ export function Filters() {
                 >
                   Aujourd'hui
                 </button>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-1.5">
                   <input
                     type="date"
                     value={dateFrom}
                     onChange={(e) => updateFilter("from", e.target.value)}
-                    className="flex-1 bg-gray-800 text-white text-sm px-2 py-1.5 rounded-lg border border-gray-700 focus:outline-none focus:border-primary-500 transition-colors"
+                    className="w-full bg-gray-800 text-white text-sm px-2 py-1.5 rounded-lg border border-gray-700 focus:outline-none focus:border-primary-500 transition-colors"
+                    placeholder="Du"
                   />
                   <input
                     type="date"
                     value={dateTo}
                     onChange={(e) => updateFilter("to", e.target.value)}
-                    className="flex-1 bg-gray-800 text-white text-sm px-2 py-1.5 rounded-lg border border-gray-700 focus:outline-none focus:border-primary-500 transition-colors"
+                    className="w-full bg-gray-800 text-white text-sm px-2 py-1.5 rounded-lg border border-gray-700 focus:outline-none focus:border-primary-500 transition-colors"
+                    placeholder="Au"
                   />
                 </div>
               </div>
