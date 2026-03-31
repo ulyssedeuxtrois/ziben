@@ -50,7 +50,7 @@ export function Filters() {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 z-40">
+        <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 z-40">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-sm">Filtres</h3>
             {hasFilters && (

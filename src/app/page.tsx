@@ -168,7 +168,7 @@ export default async function HomePage() {
 
       {/* Stats strip — compact sur mobile */}
       <div className="bg-[#FFF5F0] dark:bg-gray-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-4 sm:pt-4 sm:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-4 sm:pt-8 sm:pb-8">
         <div className="flex items-center justify-center gap-4 sm:gap-12">
           <div className="text-center">
             <div className="text-base sm:text-2xl font-extrabold text-gray-900 dark:text-white">Côte d'Azur</div>
