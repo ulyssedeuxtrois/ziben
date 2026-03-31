@@ -1,0 +1,23 @@
+name: Keep Alive Ping
+
+on:
+  schedule:
+    # Toutes les 13 minutes pour éviter le cold start Render (sleep après 15 min)
+    - cron: '*/13 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping kefa.app
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Ping app
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "https://kefa.app/api/events?limit=1" || true)
+          echo "Response: $STATUS"
+          if [ "$STATUS" = "000" ]; then
+            echo "App unreachable, trying onrender.com fallback..."
+            curl -s -o /dev/null -w "%{http_code}" --max-time 60 "https://ziben.onrender.com/api/events?limit=1" || true
+          fi
