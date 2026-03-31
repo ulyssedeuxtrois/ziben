@@ -52,34 +52,38 @@ export function CategoryFilter() {
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      <button
-        onClick={() => selectCategory("")}
-        className={cn(
-          "chip flex-shrink-0",
-          !activeCategory ? "chip-active" : "chip-inactive"
-        )}
-      >
-        Tout
-      </button>
-      {CATEGORIES.map((cat) => {
-        const isActive = activeCategory === cat.slug;
-        return (
-          <button
-            key={cat.slug}
-            onClick={() => selectCategory(cat.slug)}
-            className={cn(
-              "chip flex-shrink-0 whitespace-nowrap border",
-              isActive
-                ? (CAT_ACTIVE_STYLE[cat.slug] || "chip-active")
-                : (CAT_INACTIVE_STYLE[cat.slug] || "chip-inactive")
-            )}
-          >
-            <span>{cat.icon}</span>
-            <span>{cat.name}</span>
-          </button>
-        );
-      })}
+    <div className="relative">
+      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide px-1">
+        <button
+          onClick={() => selectCategory("")}
+          className={cn(
+            "inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all duration-200 cursor-pointer select-none whitespace-nowrap flex-shrink-0",
+            !activeCategory ? "chip-active" : "chip-inactive"
+          )}
+        >
+          Tout
+        </button>
+        {CATEGORIES.map((cat) => {
+          const isActive = activeCategory === cat.slug;
+          return (
+            <button
+              key={cat.slug}
+              onClick={() => selectCategory(cat.slug)}
+              className={cn(
+                "inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all duration-200 cursor-pointer select-none whitespace-nowrap flex-shrink-0 border",
+                isActive
+                  ? (CAT_ACTIVE_STYLE[cat.slug] || "chip-active")
+                  : (CAT_INACTIVE_STYLE[cat.slug] || "chip-inactive")
+              )}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.name}</span>
+            </button>
+          );
+        })}
+      </div>
+      {/* Fade droit pour indiquer le scroll */}
+      <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-[#f8fafc] to-transparent pointer-events-none sm:hidden dark:from-[#0a0f1a]" />
     </div>
   );
 }

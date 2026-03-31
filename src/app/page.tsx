@@ -149,7 +149,7 @@ export default async function HomePage() {
           </Suspense>
 
           {/* Time filters */}
-          <div className="mt-5 flex justify-center">
+          <div className="mt-5 flex justify-center overflow-x-auto scrollbar-hide px-2">
             <Suspense>
               <TimeFilter />
             </Suspense>
@@ -164,22 +164,22 @@ export default async function HomePage() {
         </svg>
       </div>
 
-      {/* Stats strip */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-8">
-        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+      {/* Stats strip — compact sur mobile */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-1 pb-4 sm:pt-2 sm:pb-8">
+        <div className="flex items-center justify-center gap-4 sm:gap-12">
           <div className="text-center">
-            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">Côte d'Azur</div>
-            <div className="text-xs text-gray-500 font-medium">Zone couverte</div>
+            <div className="text-base sm:text-2xl font-extrabold text-gray-900 dark:text-white">Côte d'Azur</div>
+            <div className="text-[10px] sm:text-xs text-gray-500 font-medium">Zone couverte</div>
           </div>
-          <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" />
+          <div className="h-6 sm:h-8 w-px bg-gray-200 dark:bg-gray-700" />
           <div className="text-center">
-            <div className="text-2xl font-extrabold text-primary-500">Gratuit</div>
-            <div className="text-xs text-gray-500 font-medium">Pour tout le monde</div>
+            <div className="text-base sm:text-2xl font-extrabold text-primary-500">Gratuit</div>
+            <div className="text-[10px] sm:text-xs text-gray-500 font-medium">Pour tout le monde</div>
           </div>
-          <div className="h-8 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block" />
+          <div className="h-6 sm:h-8 w-px bg-gray-200 dark:bg-gray-700" />
           <div className="text-center">
-            <div className="text-2xl font-extrabold text-gray-900 dark:text-white">24/7</div>
-            <div className="text-xs text-gray-500 font-medium">Mis à jour</div>
+            <div className="text-base sm:text-2xl font-extrabold text-gray-900 dark:text-white">24/7</div>
+            <div className="text-[10px] sm:text-xs text-gray-500 font-medium">Mis à jour</div>
           </div>
         </div>
       </div>
@@ -188,13 +188,10 @@ export default async function HomePage() {
       {trendingEvents.length > 0 && (
         <div className="section-coral py-10">
           <section className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-end justify-between mb-5">
+            <div className="mb-5">
               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
                 🔥 En ce moment
               </h2>
-              <Link href="/?sortBy=trending" className="text-sm font-medium text-primary-500 hover:text-primary-600 transition-colors">
-                Voir tout
-              </Link>
             </div>
 
             {/* Scroll horizontal sur mobile, grille 4 colonnes sur desktop */}
@@ -292,8 +289,8 @@ export default async function HomePage() {
       </div>
 
       {/* ─── CTA ORGANISATEURS ────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-warm-900 via-gray-900 to-gray-800 p-8 sm:p-12">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-16">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-warm-900 via-gray-900 to-gray-800 p-6 sm:p-12">
           {/* Déco */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent-500/10 rounded-full blur-2xl pointer-events-none" />

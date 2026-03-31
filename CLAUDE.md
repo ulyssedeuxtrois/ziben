@@ -9,6 +9,20 @@ Plateforme d'événements locaux à Nice. Les habitants trouvent les bons plans,
 
 ---
 
+## Règles de debug build
+
+**Quand le build Render est cassé, TOUJOURS dans cet ordre :**
+
+1. Lire les build logs Render (`mcp__render__list_logs`, level: `error`) — c'est la source de vérité
+2. Ne JAMAIS se fier à la mémoire ou à un diagnostic d'une session précédente
+3. Ne JAMAIS retenter `next build` en local — OneDrive bloque le filesystem, c'est inutile
+4. Après un fix, scanner TOUTES les routes API pour le même pattern (`grep` sur `src/app/api/`)
+5. Valider directement sur Render, pas en local
+
+**Pattern récurrent** : les modules qui initialisent des clients (Stripe, web-push, etc.) au niveau module avec `process.env.X!` crashent au build car les env vars n'existent pas pendant `next build`. Fix : initialiser dans le handler + guard sur les env vars + `export const dynamic = 'force-dynamic'`.
+
+---
+
 ## Stack
 
 | Couche | Techno |

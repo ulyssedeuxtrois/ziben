@@ -36,7 +36,7 @@ export function TimeFilter() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       {PERIODS.map((period) => {
         const Icon = period.icon;
         const isActive = activePeriod === period.id;
@@ -45,13 +45,13 @@ export function TimeFilter() {
             key={period.id}
             onClick={() => selectPeriod(period.id)}
             className={cn(
-              "chip gap-2 whitespace-nowrap",
+              "inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-all duration-200 cursor-pointer select-none whitespace-nowrap flex-shrink-0",
               isActive
                 ? `bg-gradient-to-r ${period.color} text-white shadow-lg`
                 : "chip-inactive"
             )}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="w-3.5 h-3.5" />
             <span>{period.label}</span>
           </button>
         );
