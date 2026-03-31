@@ -149,10 +149,12 @@ export default async function HomePage() {
           </Suspense>
 
           {/* Time filters */}
-          <div className="mt-5 flex justify-center overflow-x-auto scrollbar-hide px-2">
-            <Suspense>
-              <TimeFilter />
-            </Suspense>
+          <div className="mt-5 overflow-x-auto scrollbar-hide -mx-4 px-4">
+            <div className="flex justify-center min-w-max mx-auto pr-4">
+              <Suspense>
+                <TimeFilter />
+              </Suspense>
+            </div>
           </div>
         </div>
       </section>
@@ -165,7 +167,8 @@ export default async function HomePage() {
       </div>
 
       {/* Stats strip — compact sur mobile */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-1 pb-4 sm:pt-2 sm:pb-8">
+      <div className="bg-[#FFF5F0] dark:bg-gray-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-4 sm:pt-4 sm:pb-8">
         <div className="flex items-center justify-center gap-4 sm:gap-12">
           <div className="text-center">
             <div className="text-base sm:text-2xl font-extrabold text-gray-900 dark:text-white">Côte d'Azur</div>
@@ -182,6 +185,7 @@ export default async function HomePage() {
             <div className="text-[10px] sm:text-xs text-gray-500 font-medium">Mis à jour</div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* ─── TENDANCES ────────────────────────────────────────────────────── */}

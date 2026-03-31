@@ -64,7 +64,7 @@
   }
 
   .chip-active {
-    @apply bg-primary-500 text-white shadow-lg shadow-primary-500/25;
+    @apply bg-primary-500 text-white shadow-lg shadow-primary-500/25 border border-transparent;
   }
 
   .chip-inactive {
