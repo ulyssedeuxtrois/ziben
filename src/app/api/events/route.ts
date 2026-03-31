@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category") || "";
     const city = searchParams.get("city") || "";
     const isFree = searchParams.get("free") === "true";
+    const isPaid = searchParams.get("paid") === "true";
     const dateFrom = searchParams.get("dateFrom") || searchParams.get("from");
     const dateTo = searchParams.get("dateTo") || searchParams.get("to");
     const includePast = searchParams.get("includePast") === "true";
@@ -48,6 +49,10 @@ export async function GET(request: NextRequest) {
       where.isFree = true;
     }
 
+    if (isPaid) {
+      where.isFree = false;
+    }
+
     if (!includePast && !dateFrom) {
       where.date = { ...where.date, gte: new Date(new Date().setHours(0, 0, 0, 0)) };
     }
@@ -75,7 +80,11 @@ export async function GET(request: NextRequest) {
           organizer: { select: { id: true, name: true } },
           _count: { select: { savedBy: true } },
         },
-        orderBy: sortByDistance ? [{ date: "asc" }] : [{ boosted: "desc" }, { date: "asc" }],
+        orderBy: sortByDistance
+          ? [{ date: "asc" }]
+          : sortBy === "popularity"
+          ? [{ boosted: "desc" }, { viewCount: "desc" }, { rsvpCount: "desc" }]
+          : [{ boosted: "desc" }, { date: "asc" }],
         skip: sortByDistance ? 0 : (page - 1) * limit,
         take: sortByDistance ? undefined : limit,
       }),
